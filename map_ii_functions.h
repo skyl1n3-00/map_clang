@@ -4,7 +4,7 @@
 #include "map_lists.h"
 
 
-//Function test if the linked list is empty returns 1 if true and 0 if not
+//Function tests if the given linked list is empty returns 1 if true and 0 if not
 int empty(map_int_int_ll *list) {
   if(list->val == NULL)
     return 1;
@@ -19,6 +19,7 @@ void print(map_int_int_ll *list){
     current = current->next;
   }
 }
+
 //Function to test if a given map element exists int the linked list
 int exists(map_int_int_ll *list, map_int_int map){
   map_int_int_ll *current = list;
@@ -33,6 +34,7 @@ int exists(map_int_int_ll *list, map_int_int map){
   return 0;
 }
 
+//Function to insert the first element the list
 int genesis_node(map_int_int_ll *list, int key, int value){
   map_int_int map;
   map.key = key;
