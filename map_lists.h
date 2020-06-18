@@ -2,6 +2,7 @@
 
 typedef struct s_map_int_int{
   map_int_int val;
+  int null;
   struct s_map_int_int *next;
 }map_int_int_ll;
 
