@@ -13,7 +13,7 @@ int put_kv(list, key, value)
 int put_map(list, map)
 int map_size(list)
 int* key_set(list)
-int get_value(key)
+char* get_value(key)
 int put_dont_replace_map(list, map)
 int put_dont_replace_kv(list, key, value)
 */
@@ -79,21 +79,32 @@ int genesis_node(map_int_string_ll *list, map_int_string map){
 
 //Function to insert a map element (k, v) int the given map struct
 int put_kv(map_int_string_ll *list, int key, char *value){
+  int operation_state;
   map_int_string_ll *current = list;
   map_int_string map = {key, value};
-  if(empty(list)){
-    genesis_node(list, map);
-    return 1;
+
+  //We check if the list is empty, if it's the case we insert the first element
+  if(empty(current)){
+    operation_state = genesis_node(current, map);
+    list = current;
+    return operation_state;
   }
-  if(key_exists(list, key)){
+
+  //We check if the key already exists in the list we override the old value
+  if(key_exists(current, key)){
     while(current != NULL){
-      if(current->val.key == map.key)
-        strcpy(current->val.value, map.value);
-        break;
-    }
+      if(current->val.key == map.key){
+        //The +1 for the \0 character at the end
+        char *str = malloc(strlen(map.value) + 1);
+        str = map.value;
+        current->val.value = str;
+      }
     current = current->next;
+    }
     return 1;
   }
+
+  //We create a new node and then insert it in the list
   map_int_string_ll *node = (map_int_string_ll *)malloc(sizeof(map_int_string_ll));
   node->val = map;
   node->next = NULL;
@@ -160,7 +171,6 @@ char* get_value(map_int_string_ll *list, int key){
 int put_dont_replace(map_int_string_ll *list, map_int_string map){
   if(key_exists(list, map.key))
     return 0;
-  map_int_string_ll *current = list;
   int operation_state = put_map(list, map);
   return operation_state;
 }
@@ -170,7 +180,10 @@ doesnt replace if the actual map is already exists in the struct(map) */
 int put_dont_replace_kv(map_int_string_ll *list, int key, char *value){
   map_int_string map;
   map.key = key;
-  strcpy(map.value, value);
+  //The +1 for the \0 character at the end
+  char *str = malloc(sizeof(strlen(value) + 1));
+  str = value;
+  map.value = str;
   int operation_state = put_dont_replace(list, map);
   return operation_state;
 }

@@ -24,10 +24,6 @@ int empty(map_int_int_ll *list) {
   return 0;
 }
 
-void print_map(map_int_int map) {
-	printf("[%d, %d]\n", map.key, map.value);
-}
-
 //Function to print map
 void print(map_int_int_ll *list){
   map_int_int_ll *current = list;
@@ -85,11 +81,15 @@ int genesis_node(map_int_int_ll *list, map_int_int map){
 int put_kv(map_int_int_ll *list, int key, int value){
   map_int_int_ll *current = list;
   map_int_int map = {key, value};
+  
+  //We check if the list is empty, if it's the case we insert the first element
+  if(empty(list)){
   if(empty(list)) {
     genesis_node(list, map);
     return 1;
   }
 
+  //We check if the key already exists in the list we override the old value
   if(key_exists(list, key)){
     while(current != NULL){
       if(current->val.key == map.key){
@@ -100,6 +100,8 @@ int put_kv(map_int_int_ll *list, int key, int value){
     }
     return 1;
   }
+
+  //We create a new node and then insert it in the list
   map_int_int_ll *node = (map_int_int_ll *)malloc(sizeof(map_int_int_ll));
   node->val = map;
   node->next = NULL;
