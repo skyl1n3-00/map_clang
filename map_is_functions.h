@@ -64,7 +64,6 @@ int key_exists(map_int_string_ll *list, int key){
       return 1;
     current = current->next;
   }
-  free(current);
   return 0;
 }
 

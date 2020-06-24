@@ -51,7 +51,6 @@ int exists(map_int_int_ll *list, map_int_int map){
       return 1;
     current = current->next;
   }
-  free(current);
   return 0;
 }
 
@@ -84,7 +83,6 @@ int put_kv(map_int_int_ll *list, int key, int value){
   
   //We check if the list is empty, if it's the case we insert the first element
   if(empty(list)){
-  if(empty(list)) {
     genesis_node(list, map);
     return 1;
   }
@@ -163,8 +161,8 @@ int get_value(map_int_int_ll *list, int key){
   return -1;
 }
 
-// /*Function to insert a map node into the struct but doesnt replace if 
-// the actual map is already exists in the struct(map)*/
+/*Function to insert a map node into the struct but doesnt replace if 
+the actual map is already exists in the struct(map)*/
 int put_dont_replace(map_int_int_ll *list, map_int_int map){
   if(key_exists(list, map.key))
     return 0;
@@ -181,4 +179,48 @@ int put_dont_replace_kv(map_int_int_ll *list, int key, int value){
   map.value = value;
   int operation_state = put_dont_replace(list, map);
   return operation_state;
+}
+
+//Delete element at index return -1 if map is empty
+int remove_at(map_int_int_ll *list, int index){
+  if(empty(list)){
+    return -1;
+  }
+  if(map_size(list) < index){
+    return -1;
+  }
+  map_int_int_ll *current = list, *prev;
+  while(current != NULL){
+    if(index == 0){
+      prev->next = current->next;
+      return 1;
+    }
+    index--;
+    prev = current;
+    current = current->next;
+  }
+  return -12;
+}
+
+/*Return the last element in the map and delete it return 
+(-1:k , -1:v) if null */
+map_int_int pop(map_int_int_ll *list){
+  map_int_int null_map = {-1, -1};
+  map_int_int_ll *current = list, *prev;
+  if(empty(list)){
+    return null_map;
+  }
+  if(map_size(list) == 1){
+    map_int_int map = current->val;
+    current->null = 1;
+    return map;
+  }
+  while(current->next != NULL){
+    prev = current;
+    current = current->next;
+  }
+  map_int_int map = current->val;
+  prev->next = NULL;
+
+  return map;
 }
