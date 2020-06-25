@@ -94,7 +94,7 @@ int put_kv(map_int_string_ll *list, int key, char *value){
     while(current != NULL){
       if(current->val.key == map.key){
         //The +1 for the \0 character at the end
-        char *str = malloc(strlen(map.value) + 1);
+        char *str = (char*)malloc(strlen(map.value) + 1);
         str = map.value;
         current->val.value = str;
       }
@@ -180,9 +180,9 @@ int put_dont_replace_kv(map_int_string_ll *list, int key, char *value){
   map_int_string map;
   map.key = key;
   //The +1 for the \0 character at the end
-  char *str = malloc(sizeof(strlen(value) + 1));
-  str = value;
-  map.value = str;
+  // char *str = malloc(sizeof(strlen(value) + 1));
+  // str = value;
+  map.value = value;
   int operation_state = put_dont_replace(list, map);
   return operation_state;
 }

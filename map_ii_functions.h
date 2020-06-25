@@ -15,6 +15,8 @@ int* key_set(list)
 int get_value(key)
 int put_dont_replace_map(list, map)
 int put_dont_replace_kv(list, key, value)
+int remove_at(list, position)
+map_int_int pop(list);
 */
 
 //Function tests if the given linked list is empty returns 1 if true and 0 if not
@@ -182,15 +184,26 @@ int put_dont_replace_kv(map_int_int_ll *list, int key, int value){
 }
 
 //Delete element at index return -1 if map is empty
-int remove_at(map_int_int_ll *list, int index){
-  if(empty(list)){
+int remove_at(map_int_int_ll **list, int index){
+  if(empty(*list)){
     return -1;
   }
-  if(map_size(list) < index){
+  if(map_size(*list) < index){
     return -1;
   }
-  map_int_int_ll *current = list, *prev;
-  while(current != NULL){
+  map_int_int_ll *current = *list, *new_list;
+  new_list = (map_int_int_ll*)malloc(sizeof(map_int_int_ll));
+  if(index == 0){
+    current = current->next;
+    while(current != NULL){
+      put_map(new_list, current->val);
+      current = current->next;
+    }
+    *list = new_list;
+    return 1;
+  }
+  map_int_int_ll *prev;
+  while(1){
     if(index == 0){
       prev->next = current->next;
       return 1;
@@ -203,7 +216,7 @@ int remove_at(map_int_int_ll *list, int index){
 }
 
 /*Return the last element in the map and delete it return 
-(-1:k , -1:v) if null */
+(-1:k, -1:v) if null */
 map_int_int pop(map_int_int_ll *list){
   map_int_int null_map = {-1, -1};
   map_int_int_ll *current = list, *prev;
@@ -223,4 +236,12 @@ map_int_int pop(map_int_int_ll *list){
   prev->next = NULL;
 
   return map;
+}
+
+//Function to clear the list;
+int clear(map_int_int_ll **list){
+  *list = NULL;
+  if(list == NULL)
+    return 1;
+  return 0;
 }
