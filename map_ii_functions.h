@@ -3,23 +3,26 @@
 #include "map_lists.h"
 
 /*
-int empty(list)
-void print(list)
+int empty(*list)
+void print(*list)
 int equals(map1, map2)
-int exists(list, map)
-int exists_key(list, key)
+int exists(*list, map)
+int exists_key(*list, key)
 int put_kv(list, key, value)
-int put_map(list, map)
-int map_size(list)
-int* key_set(list)
+int put_map(*list, map)
+int map_size(*list)
+int* key_set(*list)
 int get_value(key)
-int put_dont_replace_map(list, map)
-int put_dont_replace_kv(list, key, value)
-int remove_at(list, position)
-map_int_int pop(list);
+int put_dont_replace_map(*list, map)
+int put_dont_replace_kv(*list, key, value)
+int remove_at(**list, position)
+int remove_key(**list, key)
+map_int_int pop(**list)
+int clear(**list)
 */
 
-//Function tests if the given linked list is empty returns 1 if true and 0 if not
+/*Function tests if the given map is empty returns 1 
+if true and 0 if not*/
 int empty(map_int_int_ll *list) {
   if(list->null == 0)
     return 1;
@@ -83,13 +86,15 @@ int put_kv(map_int_int_ll *list, int key, int value){
   map_int_int_ll *current = list;
   map_int_int map = {key, value};
   
-  //We check if the list is empty, if it's the case we insert the first element
+  /*We check if the list is empty, if it's the case we insert 
+  the first element*/
   if(empty(list)){
     genesis_node(list, map);
     return 1;
   }
 
-  //We check if the key already exists in the list we override the old value
+  /*We check if the key already exists in the list we override
+  the old value*/
   if(key_exists(list, key)){
     while(current != NULL){
       if(current->val.key == map.key){
@@ -147,8 +152,8 @@ int* key_set(map_int_int_ll *list){
   return keys;
 }
 
-/*Function to return the value of a give key return -1 if the given key 
-doesnt exists in the list */
+/*Function to return the value of a give key return -1 if the 
+given key doesnt exists in the list*/
 int get_value(map_int_int_ll *list, int key){
   if(!key_exists(list, key))
     return -1;
@@ -163,8 +168,8 @@ int get_value(map_int_int_ll *list, int key){
   return -1;
 }
 
-/*Function to insert a map node into the struct but doesnt replace if 
-the actual map is already exists in the struct(map)*/
+/*Function to insert a map node into the struct but doesnt replace
+if the actual map is already exists in the struct(map)*/
 int put_dont_replace(map_int_int_ll *list, map_int_int map){
   if(key_exists(list, map.key))
     return 0;
@@ -174,7 +179,7 @@ int put_dont_replace(map_int_int_ll *list, map_int_int map){
 }
 
 /*Function to insert a map in key, value form into the struct but
-doesnt replace if the actual map is already exists in the struct(map) */
+doesnt replace if the actual map is already exists in the struct(map)*/
 int put_dont_replace_kv(map_int_int_ll *list, int key, int value){
   map_int_int map;
   map.key = key;
@@ -183,12 +188,47 @@ int put_dont_replace_kv(map_int_int_ll *list, int key, int value){
   return operation_state;
 }
 
+/*Remove the element of the given key, if not exists return 0
+otherwise 1*/
+int remove_key(map_int_int_ll **list, int key){
+  if(empty(*list)) {
+    return 0;
+  }
+
+  if(!key_exists(*list, key)){
+    return 0;
+  }
+  map_int_int_ll *current = *list, *new_list;
+  new_list = (map_int_int_ll*)malloc(sizeof(map_int_int_ll));
+  //We test if the given key matches the first key of the map 
+  if(current->val.key == key){
+    current = current->next;
+    while(current != NULL){
+      put_map(new_list, current->val);
+      current = current->next;
+    }
+    *list = new_list;
+    return 1;
+  }
+  map_int_int_ll *prev;
+  while(1){
+    if(current->val.key == key){
+      prev->next = current->next;
+      return 1;
+    }
+    prev = current;
+    current = current->next;
+  }
+
+  return 0;
+}
+
 //Delete element at index return -1 if map is empty
 int remove_at(map_int_int_ll **list, int index){
   if(empty(*list)){
     return -1;
   }
-  if(map_size(*list) < index){
+  if(map_size(*list) <= index){
     return -1;
   }
   map_int_int_ll *current = *list, *new_list;
@@ -212,7 +252,7 @@ int remove_at(map_int_int_ll **list, int index){
     prev = current;
     current = current->next;
   }
-  return -12;
+  return -1;
 }
 
 /*Return the last element in the map and delete it return 
@@ -238,7 +278,8 @@ map_int_int pop(map_int_int_ll *list){
   return map;
 }
 
-//Function to clear the list;
+/*Function to clear the list return 1 if operation is done 
+otherwise 0*/
 int clear(map_int_int_ll **list){
   *list = NULL;
   if(list == NULL)

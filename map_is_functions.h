@@ -4,18 +4,22 @@
 #include "map_lists.h"
 
 /*
-int empty(list)
-void print(list)
+int empty(*list)
+void print(*list)
 int equals(map1, map2)
-int exists(list, map)
-int exists_key(list, key)
+int exists(*list, map)
+int exists_key(*list, key)
 int put_kv(list, key, value)
-int put_map(list, map)
-int map_size(list)
-int* key_set(list)
+int put_map(*list, map)
+int map_size(*list)
+int* key_set(*list)
 char* get_value(key)
-int put_dont_replace_map(list, map)
-int put_dont_replace_kv(list, key, value)
+int put_dont_replace_map(*list, map)
+int put_dont_replace_kv(*list, key, value)
+int remove_at(**list, position)
+int remove_key(**list, key)
+map_int_string pop(**list)
+int clear(**list)
 */
 
 //Function tests if the given linked list is empty returns 1 if true and 0 if not
@@ -185,4 +189,103 @@ int put_dont_replace_kv(map_int_string_ll *list, int key, char *value){
   map.value = value;
   int operation_state = put_dont_replace(list, map);
   return operation_state;
+}
+
+/*Remove the element of the given key, if not exists return 0
+otherwise 1*/
+int remove_key(map_int_string_ll **list, int key){
+  if(empty(*list)) {
+    return 0;
+  }
+
+  if(!key_exists(*list, key)){
+    return 0;
+  }
+  map_int_string_ll *current = *list, *new_list;
+  new_list = (map_int_string_ll*)malloc(sizeof(map_int_string_ll));
+  //We test if the given key matches the first key of the map 
+  if(current->val.key == key){
+    current = current->next;
+    while(current != NULL){
+      put_map(new_list, current->val);
+      current = current->next;
+    }
+    *list = new_list;
+    return 1;
+  }
+  map_int_string_ll *prev;
+  while(1){
+    if(current->val.key == key){
+      prev->next = current->next;
+      return 1;
+    }
+    prev = current;
+    current = current->next;
+  }
+
+  return 0;
+}
+
+//Delete element at index return -1 if map is empty
+int remove_at(map_int_string_ll **list, int index){
+  if(empty(*list)){
+    return -1;
+  }
+  if(map_size(*list) <= index){
+    return -1;
+  }
+  map_int_string_ll *current = *list, *new_list;
+  new_list = (map_int_string_ll*)malloc(sizeof(map_int_string_ll));
+  if(index == 0){
+    current = current->next;
+    while(current != NULL){
+      put_map(new_list, current->val);
+      current = current->next;
+    }
+    *list = new_list;
+    return 1;
+  }
+  map_int_string_ll *prev;
+  while(1){
+    if(index == 0){
+      prev->next = current->next;
+      return 1;
+    }
+    index--;
+    prev = current;
+    current = current->next;
+  }
+  return -1;
+}
+
+/*Return the last element in the map and delete it return 
+(-1:k, null:v) if null */
+map_int_string pop(map_int_string_ll *list){
+  map_int_string null_map = {-1, NULL};
+  map_int_string_ll *current = list, *prev;
+  if(empty(list)){
+    return null_map;
+  }
+  if(map_size(list) == 1){
+    map_int_string map = current->val;
+    current->null = 1;
+    return map;
+  }
+  while(current->next != NULL){
+    prev = current;
+    current = current->next;
+  }
+  map_int_string map = current->val;
+  prev->next = NULL;
+
+  return map;
+}
+
+/*Function to clear the list return 1 if operation is done 
+otherwise 0*/
+int clear(map_int_string_ll **list){
+  *list = NULL;
+  if(list == NULL)
+    return 1;
+  return 0;
 }
