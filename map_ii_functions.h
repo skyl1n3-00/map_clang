@@ -93,7 +93,7 @@ int put_kv(map_int_int_ll *list, int key, int value){
     return 1;
   }
 
-  /*We check if the key already exists in the list we override
+  /*We check if the key already exists in the list, if true override
   the old value*/
   if(key_exists(list, key)){
     while(current != NULL){
@@ -139,7 +139,7 @@ int map_size(map_int_int_ll *list){
   return i;
 }
 
-//Function return the keyset of the given map
+//Function returns the keyset of the given map
 int* key_set(map_int_int_ll *list){
   map_int_int_ll *current = list;
   int i = 0;
